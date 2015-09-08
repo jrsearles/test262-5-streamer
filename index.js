@@ -1,13 +1,14 @@
 var fs = require("vinyl-fs");
 var through = require("through2");
 var merge = require("merge-stream");
+var path = require("path");
 
 var root = "node_modules/test262/test/suite/";
 
 module.exports = function test262Streamer (opt) {
 	opt = opt || {};
 
-	var files = (opt.files || ["**/*.js"]).map(function (file) { return root + file; });
+	var files = (opt.files || ["**/*.js"]).map(function (file) { return path.join(__dirname, root) + file; });
 	var harness = opt.harness;
 	var stream1;
 

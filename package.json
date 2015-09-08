@@ -1,7 +1,7 @@
 {
   "name": "test262-streamer",
   "version": "0.1.0",
-  "description": "Node runner for executing ECMAScript 262 conformance tests",
+  "description": "File streamer for executing ECMAScript 262 conformance tests",
   "main": "index.js",
   "scripts": {},
   "keywords": [
