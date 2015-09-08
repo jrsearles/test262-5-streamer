@@ -1,0 +1,20 @@
+{
+  "name": "test262-streamer",
+  "version": "0.1.0",
+  "description": "Node runner for executing ECMAScript 262 conformance tests",
+  "main": "index.js",
+  "scripts": {},
+  "keywords": [
+    "test262",
+    "ecmascript",
+    "javascript"
+  ],
+  "author": "Joshua Searles",
+  "license": "MIT",
+  "dependencies": {
+    "merge-stream": "^1.0.0",
+    "test262": "git://github.com/jrsearles/test262.git#es5-tests",
+    "through2": "^2.0.0",
+    "vinyl-fs": "^1.0.0"
+  }
+}
