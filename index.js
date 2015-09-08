@@ -43,7 +43,9 @@ module.exports = function test262Streamer (opt) {
 	return vfs.src(files)
 		.pipe(through.obj(function (file, enc, done) {
 			if (!harnessLoaded) {
-				fs.readFile("harness.js", function (err, contents) {
+				fs.readFile(path.join(__dirname, "harness.js"), function (err, contents) {
+					console.log(err);
+
 					harness = contents;
 					harnessLoaded = true;
 					processFile(file, harness, done);
