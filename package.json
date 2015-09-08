@@ -3,6 +3,10 @@
   "version": "0.1.1",
   "description": "File streamer for executing ECMAScript 262 conformance tests",
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jrsearles/test262-streamer.git"
+  },
   "scripts": {},
   "keywords": [
     "test262",
