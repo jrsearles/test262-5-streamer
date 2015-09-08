@@ -1,6 +1,6 @@
-var fs = require("vinyl-fs");
+var vfs = require("vinyl-fs");
+var fs = require("fs");
 var through = require("through2");
-var merge = require("merge-stream");
 var path = require("path");
 var acorn = require("acorn");
 
@@ -23,31 +23,33 @@ function getPrefix (src) {
 	return "";
 }
 
+function processFile (file, harness, cb) {
+	var src = file.contents.toString();
+
+	// need to hoist strict directive
+	var pre = getPrefix(src);
+
+	file.contents = new Buffer(pre + harness + src);
+	cb(null, file);
+}
+
 module.exports = function test262Streamer (opt) {
 	opt = opt || {};
 
 	var files = (opt.files || ["**/*.js"]).map(function (file) { return path.join(__dirname, root) + file; });
 	var harness = opt.harness;
-	var stream1;
+	var harnessLoaded = "harness" in opt;
 
-	if (!("harness" in opt)) {
-		stream1 = fs.src(["harness.js"])
-			.pipe(through.obj(function (file, enc, done) {
-				harness = file.contents.toString();
-				done();
-			}));
-	}
-
-	var stream2 = fs.src(files)
-			.pipe(through.obj(function (file, enc, done) {
-				var src = file.contents.toString();
-
-				// need to hoist strict directive
-				var pre = getPrefix(src);
-
-				file.contents = new Buffer(pre + harness + src);
-				done(null, file);
-			}));
-
-	return stream1 ? merge(stream1, stream2) : stream2;
+	return vfs.src(files)
+		.pipe(through.obj(function (file, enc, done) {
+			if (!harnessLoaded) {
+				fs.readFile("harness.js", function (err, contents) {
+					harness = contents;
+					harnessLoaded = true;
+					processFile(file, harness, done);
+				});
+			} else {
+				processFile(file, harness, done);
+			}
+		}));
 };
