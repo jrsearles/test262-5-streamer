@@ -33,10 +33,19 @@ function processFile (file, harness, cb) {
 	cb(null, file);
 }
 
+function adjustGlob (pattern) {
+	var base = path.join(__dirname, root);
+	if (pattern[0] === "!") {
+		return "!" + base + pattern.substr(1);
+	}
+
+	return base + pattern;
+}
+
 module.exports = function test262Streamer (opt) {
 	opt = opt || {};
 
-	var files = (opt.files || ["**/*.js"]).map(function (file) { return path.join(__dirname, root) + file; });
+	var files = (opt.files || ["**/*.js"]).map(adjustGlob);
 	var harness = opt.harness;
 	var harnessLoaded = "harness" in opt;
 
@@ -44,8 +53,6 @@ module.exports = function test262Streamer (opt) {
 		.pipe(through.obj(function (file, enc, done) {
 			if (!harnessLoaded) {
 				fs.readFile(path.join(__dirname, "harness.js"), function (err, contents) {
-					console.log(err);
-
 					harness = contents;
 					harnessLoaded = true;
 					processFile(file, harness, done);
