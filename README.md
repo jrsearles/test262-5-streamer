@@ -1,6 +1,6 @@
 ## Test262 Streamer
 
-Stream Test262 conformance tests
+Stream Test262 ECMAScript 5.1 conformance tests
 
 ## Options
 
