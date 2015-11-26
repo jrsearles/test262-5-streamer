@@ -1,7 +1,7 @@
 {
-  "name": "test262-streamer",
-  "version": "0.2.3",
-  "description": "File streamer for executing ECMAScript 262 conformance tests",
+  "name": "test262-5-streamer",
+  "version": "0.3.0",
+  "description": "File streamer for executing ECMAScript 5.1 262 conformance tests",
   "main": "index.js",
   "repository": {
     "type": "git",

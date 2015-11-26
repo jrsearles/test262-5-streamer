@@ -6,7 +6,7 @@ var acorn = require("acorn");
 
 var root = "node_modules/test262/test/suite/";
 
-function getPrefix (src) {
+function isStrict (src) {
 	try {
 		var ast = acorn.parse(src);
 		var body = ast.body[0];
@@ -14,36 +14,34 @@ function getPrefix (src) {
 			&& body.type === "ExpressionStatement"
 			&& body.expression.type === "Literal"
 			&& body.expression.value === "use strict") {
-
-			// hoist strict directive so it precedes test harness
-			return body.expression.raw + "\n";
+				
+			return true;
 		}
 	}	catch (err) { }
 
-	return "";
+	return false;
 }
 
 function processFile (file, harness, cb) {
 	var src = file.contents.toString();
 
-	// need to hoist strict directive
-	var pre = getPrefix(src);
-
-	file.contents = new Buffer(pre + harness + src);
+	file.useStrict = isStrict(src);
+	file.contents = new Buffer(harness + src);
+	
 	cb(null, file);
-}
-
-function adjustGlob (pattern) {
-	var base = path.join(__dirname, root);
-	if (pattern[0] === "!") {
-		return "!" + base + pattern.substr(1);
-	}
-
-	return base + pattern;
 }
 
 module.exports = function test262Streamer (opt) {
 	opt = opt || {};
+	
+	function adjustGlob (pattern) {
+		var base = opt.base || path.join(__dirname, root);
+		if (pattern[0] === "!") {
+			return "!" + base + pattern.substr(1);
+		}
+	
+		return base + pattern;
+	}
 
 	var files = (opt.files || ["**/*.js"]).map(adjustGlob);
 	var harness = opt.harness;
